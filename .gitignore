@@ -1,0 +1,7 @@
+.*.sw[mnop]
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
