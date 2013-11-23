@@ -25,8 +25,9 @@ import com.goinstant.auth.Group;
 import com.goinstant.auth.User;
 
 /**
- * Hello world!
+ * Your token Token Factory.
  *
+ * Consumers users, emits joy and JWT strings.
  */
 public class Signer {
     private JWSSigner hmac;
