@@ -2,12 +2,15 @@ package com.goinstant.auth;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -17,8 +20,9 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.jose.JOSEObjectType;
 
+import com.goinstant.auth.Group;
+import com.goinstant.auth.User;
 
 /**
  * Hello world!
@@ -29,7 +33,51 @@ public class Signer {
 
     // don't know why this isn't in nimbusds... it's part of the spec (maybe
     // got removed in later drafts?)
-    private static JOSEObjectType typJWT = new JOSEObjectType("JWT");
+    private final static JOSEObjectType TYP_JWT = new JOSEObjectType("JWT");
+
+    /**
+     * Claims that can't be custom for a User.
+     */
+    private final static Set<String> RESERVED_CLAIMS;
+    static {
+        Set<String> n = new HashSet<String>();
+        n.add("aud");
+        n.add("dn");
+        n.add("g");
+        n.add("iss");
+        n.add("sub");
+        RESERVED_CLAIMS = Collections.unmodifiableSet(n);
+    };
+
+    /**
+     * Claims that can't be custom for a Group.
+     */
+    private final static Set<String> GROUP_RESERVED_CLAIMS;
+    static {
+        Set<String> n = new HashSet<String>();
+        n.add("dn");
+        n.add("id");
+        GROUP_RESERVED_CLAIMS = Collections.unmodifiableSet(n);
+    };
+
+    /**
+     * The "aud" claim is always goinstant.net
+     */
+    private final static List<String> AUDIENCE;
+    static {
+        ArrayList<String> n = new ArrayList<String>(1);
+        n.add(0,"goinstant.net");
+        AUDIENCE = Collections.unmodifiableList(n);
+    };
+
+    /**
+     * Default HS256 JWS header.
+     */
+    private final static JWSHeader DEFAULT_HEADER;
+    static {
+        DEFAULT_HEADER = makeHeader();
+    };
+
 
     /**
      * Creates a Signer with a base64 or base64url encoded secret key.
@@ -48,8 +96,8 @@ public class Signer {
         byte[] binaryKey = parsed.decode();
         if (binaryKey.length < 32) {
             throw new IllegalArgumentException(
-                "secretKey is too short (must be >= 32 bytes after decoding)"
-            );
+                    "secretKey is too short (must be >= 32 bytes after decoding)"
+                    );
         }
 
         this.hmac = new MACSigner(binaryKey);
@@ -58,86 +106,116 @@ public class Signer {
     /**
      * Create a signed JWT token for your GoInstant App.
      *
-     * The userData param is a Map to various properties.  The following
-     * properties are required, additional properties are optional.
+     * @param user the user to create a token for.
+     *   See {@link com.goinstant.auth.PlainUser} if you don't want to implement your own.
      *
-     * <dl>
-     *   <dt>id (String)</dt>
-     *   <dd>Permanent identifier for this user</dd>
+     * @throws IllegalArgumentException if the user or extraHeaders contain bad
+     *   values or reserved custom properties.
      *
-     *   <dt>domain (String)</dt>
-     *   <dd>The domain name in which the user and group IDs are defined (e.g. example.com)</dd>
-     *
-     *   <dt>displayName (String)</dt>
-     *   <dd>The full name to display for this user</dd>
-     * </dl>
-     *
-     * Of the optional properties, groups must be a
-     * List&lt;Map&lt;String,Object&gt;&gt; with the following required properties:
-     *
-     * <dl>
-     *   <dt>id</dt>
-     *   <dd>Permanent identifier for this group</dd>
-     *
-     *   <dt>displayName</dt>
-     *   <dd>name to display for this group</dd>
-     * </dl>
-     *
-     * @param userData defines the properties for this user that should be
-     * encoded in the token.
-     *
-     * @return signed JWT
+     * @return signed token if successful, null otherwise.
      */
-    public String sign(Map<String,Object> userData) {
-        return this.sign(userData, null);
+    public String sign(User user) {
+        return this.sign(user, null);
     }
 
     /**
      * Create and sign a JWT token for this userData.
      *
-     * @param userData same as in {@link sign(java.util.Map<java.lang.String,java.lang.Object>)}
+     * @param user the user to create a token for.
+     *   See {@link com.goinstant.auth.PlainUser} if you don't want to implement your own.
      *
-     * @param extraHeaders items to add to the JWS header.
-     *   See the {@link http://nimbusds.com/files/jose-jwt/javadoc/com/nimbusds/jose/JWSHeader.html Nimbus JOSE JWT docs}
-     *   for acceptable names and the corresponding
-     *   methods used to set them.
+     * @param extraHeaders a map of additional properties to include in the JWS header.
      *
-     * @throws java.lang.ClassCastException if any of the extra headers cannot
-     * be cast to the requisite type.
-     * @throws java.lang.IllegalArgumentException if any of the required
-     * userData parameters are missing.
+     * @throws IllegalArgumentException if the user or extraHeaders contain bad
+     *   values or reserved custom properties.
      *
-     * @return JWT String if successful, null otherwise.
+     * @throws ClassCastException if one of the extra headers' value is of the
+     *  wrong type for that key.
+     *
+     * @return signed token if successful, null otherwise.
      */
-    public String sign(Map<String,Object> userData, Map<String,Object> extraHeaders) {
-        JWTClaimsSet claims = new JWTClaimsSet();
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-
-        if (extraHeaders != null) {
-            assignJWSHeaders(header, extraHeaders);
-        }
-        header.setType(typJWT);
-
-        assignJWTClaims(claims, userData);
-
-        SignedJWT jwt = new SignedJWT(header, claims);
+    public String sign(User user, Map<String,Object> extraHeaders) {
         try {
+            JWSHeader header = (extraHeaders == null || extraHeaders.isEmpty())
+                ? DEFAULT_HEADER
+                : convertHeaders(extraHeaders);
+            JWTClaimsSet claims = userToClaims(user);
+
+            SignedJWT jwt = new SignedJWT(header, claims);
             jwt.sign(this.hmac);
             return jwt.serialize();
-        } catch (IllegalStateException e) { // didn't sign properly
-            return null;
-        } catch (JOSEException e) { // other crypto problems
+
+        } catch (JOSEException e) { // some crypto problem
             return null;
         }
     }
 
-    private static void assignJWTClaims(JWTClaimsSet claims, Map<String,Object> userData) {
-        List<String> aud = new ArrayList<String>(1);
-        aud.add(0,"goinstant.net");
-        claims.setAudience(aud);
+    /**
+     * Converts a User and its Groups into a JWTClaimsSet.
+     */
+    private static JWTClaimsSet userToClaims(User user) {
+        JWTClaimsSet claims = new JWTClaimsSet();
+        claims.setAudience(AUDIENCE);
+        claims.setSubject(user.getID());
+        claims.setIssuer(user.getDomain());
+        claims.setCustomClaim("dn", user.getDisplayName());
+
+        Map<String,Object> custom = user.getCustomClaims();
+        for (Map.Entry<String,Object> entry : custom.entrySet()) {
+            String key = entry.getKey();
+            if (RESERVED_CLAIMS.contains(key)) {
+                throw new IllegalArgumentException("The '"+key+"' claim cannot be custom for a User");
+            }
+            claims.setClaim(key, entry.getValue());
+        }
+
+        Set<Group> groups = user.getGroups();
+        if (groups.size() > 0) {
+            ArrayList<Object> g = new ArrayList<Object>(groups.size());
+            for (Group group : groups) {
+                g.add(groupToMap(group));
+            }
+            claims.setCustomClaim("g", g);
+        }
+
+        return claims;
     }
 
-    private static void assignJWSHeaders(JWSHeader header, Map<String,Object> extraHeaders) {
+    /**
+     * Converts a Group into a generic Map for serialization.
+     */
+    private static Map<String,Object> groupToMap(Group group) {
+        Map<String,Object> groupMap = new HashMap<String,Object>();
+        groupMap.put("id", group.getID());
+        groupMap.put("dn", group.getDisplayName());
+
+        Map<String,Object> custom = group.getCustomClaims();
+        for (Map.Entry<String,Object> entry : custom.entrySet()) {
+            String key = entry.getKey();
+            if (GROUP_RESERVED_CLAIMS.contains(key)) {
+                throw new IllegalArgumentException("The '"+key+"' claim cannot be custom for a Group");
+            }
+            groupMap.put(key, entry.getValue());
+        }
+
+        return groupMap;
+    }
+
+    /**
+     * Construct a fresh HS256 JWS header.
+     */
+    private static JWSHeader makeHeader() {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
+        header.setType(TYP_JWT);
+        return header;
+    }
+
+    /**
+     * Attempt to assign custom headers
+     */
+    private static JWSHeader convertHeaders(Map<String,Object> extraHeaders) {
+        JWSHeader header = makeHeader();
+
         for (Map.Entry<String,Object> entry : extraHeaders.entrySet()) {
             String key = entry.getKey();
             Object val = entry.getValue();
@@ -158,16 +236,16 @@ public class Signer {
             } else if (key.equals("x5t")) {
                 header.setX509CertThumbprint((Base64URL)val);
             } else if (key.equals("x5c")) {
-                @SuppressWarnings("unchecked")
-                List<Base64> x5c = (List<Base64>)val;
+                @SuppressWarnings("unchecked") List<Base64> x5c = (List<Base64>)val;
                 header.setX509CertChain(x5c);
             } else if (key.equals("crit")) {
-                @SuppressWarnings("unchecked")
-                Set<String> crit = (Set<String>)val;
+                @SuppressWarnings("unchecked") Set<String> crit = (Set<String>)val;
                 header.setCriticalHeaders(crit);
             } else {
                 header.setCustomParameter(key, val);
             }
         }
+
+        return header;
     }
 }
