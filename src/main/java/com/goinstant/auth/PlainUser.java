@@ -27,7 +27,8 @@ public class PlainUser extends PlainThing implements User  {
      */
     public PlainUser(String id, String domain, String displayName, Set<Group> groups) {
         super(id, displayName);
-        this.init(domain, groups);
+        this.domain = domain;
+        this.groups = groups;
     }
 
     /**
@@ -39,7 +40,7 @@ public class PlainUser extends PlainThing implements User  {
      */
     public PlainUser(String id, String domain, String displayName) {
         super(id, displayName);
-        this.init(domain, null);
+        this.domain = domain;
     }
 
     /**
@@ -52,41 +53,8 @@ public class PlainUser extends PlainThing implements User  {
      */
     public PlainUser(String id, String domain) {
         super(id, null);
-        this.init(domain, null);
-    }
-
-
-    /**
-     * Initializes properties of this user.
-     * @param domain The domain name in which the user and group IDs are defined.
-     * @param groups groups this user belongs to (null OK).
-     */
-    private void init(String domain, Set<Group> groups) {
-        if (domain == null || domain.length() == 0)
-            throw new IllegalArgumentException("domain must be a non-empty String");
-
         this.domain = domain;
-        this.groups = groups;
     }
-
-    @Override
-    public boolean equals(Object b) {
-        try {
-            User group = (User)b;
-            return this.equals(group);
-        } catch (ClassCastException e) {
-            return false;
-        }
-    }
-
-    public boolean equals(User user) {
-        return this.getDomain().equals(user.getDomain()) &&
-           this.getID().equals(user.getID());
-    }
-
-    /*
-     * interface: User
-     */
 
     /**
      * @return domain of this user and its groups

@@ -88,16 +88,44 @@ public class SignerTest extends TestCase {
     }
 
     public void testUserWithoutID() {
+        Signer signer = new Signer("HKYdFdnezle2yrI2_Ph3cHz144bISk-cvuAbeAAA999");
+        PlainUser user = new PlainUser(null, "example.com", "bob");
+
         try {
-            PlainUser user = new PlainUser(null, "example.com", "bob");
+            signer.sign(user);
+            assertTrue(false);
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    public void testUserWithEmptyId() {
+        Signer signer = new Signer("HKYdFdnezle2yrI2_Ph3cHz144bISk-cvuAbeAAA999");
+        PlainUser user = new PlainUser("", "example.com", "bob");
+
+        try {
+            signer.sign(user);
             assertTrue(false);
         } catch (IllegalArgumentException e) {
         }
     }
 
     public void testUserWithoutDomain() {
+        Signer signer = new Signer("HKYdFdnezle2yrI2_Ph3cHz144bISk-cvuAbeAAA999");
+        PlainUser user = new PlainUser("bar", null, "bob");
+
         try {
-            PlainUser user = new PlainUser("bar", null, "bob");
+            signer.sign(user);
+            assertTrue(false);
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    public void testUserWithEmptyDomain() {
+        Signer signer = new Signer("HKYdFdnezle2yrI2_Ph3cHz144bISk-cvuAbeAAA999");
+        PlainUser user = new PlainUser("bar", "", "bob");
+
+        try {
+            signer.sign(user);
             assertTrue(false);
         } catch (IllegalArgumentException e) {
         }

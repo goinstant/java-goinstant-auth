@@ -16,14 +16,6 @@ class PlainThing {
      * @param displayName (optional) display name of this User/Group (defaults to id)
      */
     protected PlainThing(String id, String displayName) {
-        if (id == null || id.length() == 0)
-            throw new IllegalArgumentException("id must be a non-empty String");
-
-        // optional, but must be non-empty if provided
-        if (displayName != null && displayName.length() == 0)
-            throw new IllegalArgumentException(
-                "displayName must be a non-empty String");
-
         this.id = id;
         this.displayName = displayName;
     }

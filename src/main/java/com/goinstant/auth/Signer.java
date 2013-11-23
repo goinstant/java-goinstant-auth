@@ -150,15 +150,36 @@ public class Signer {
         }
     }
 
+    private static void checkIdAndDn(String id, String displayName) {
+        if (id == null || id.length() == 0)
+            throw new IllegalArgumentException(
+                "id must be a non-empty String");
+
+        // optional, but must be non-empty if provided
+        if (displayName != null && displayName.length() == 0)
+            throw new IllegalArgumentException(
+                "displayName must be a non-empty String");
+    }
+
     /**
      * Converts a User and its Groups into a JWTClaimsSet.
      */
     private static JWTClaimsSet userToClaims(User user) {
         JWTClaimsSet claims = new JWTClaimsSet();
+
+        String id = user.getID();
+        String displayName = user.getDisplayName();
+        checkIdAndDn(id, displayName);
+
+        String domain = user.getDomain();
+        if (domain == null || domain.length() == 0)
+            throw new IllegalArgumentException(
+                "domain must be a non-empty String");
+
         claims.setAudience(AUDIENCE);
-        claims.setSubject(user.getID());
-        claims.setIssuer(user.getDomain());
-        claims.setCustomClaim("dn", user.getDisplayName());
+        claims.setSubject(id);
+        claims.setIssuer(domain);
+        claims.setCustomClaim("dn", displayName != null ? displayName : id);
 
         Map<String,Object> custom = user.getCustomClaims();
         for (Map.Entry<String,Object> entry : custom.entrySet()) {
@@ -186,8 +207,12 @@ public class Signer {
      */
     private static Map<String,Object> groupToMap(Group group) {
         Map<String,Object> groupMap = new HashMap<String,Object>();
-        groupMap.put("id", group.getID());
-        groupMap.put("dn", group.getDisplayName());
+
+        String id = group.getID();
+        String displayName = group.getDisplayName();
+        checkIdAndDn(id, displayName);
+        groupMap.put("id", id);
+        groupMap.put("dn", displayName);
 
         Map<String,Object> custom = group.getCustomClaims();
         for (Map.Entry<String,Object> entry : custom.entrySet()) {
