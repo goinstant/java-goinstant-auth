@@ -3,7 +3,7 @@ package com.goinstant.auth;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -90,18 +90,21 @@ public class Signer {
      * @throws java.lang.IllegalArgumentException if the base64 is invalid or too short
      */
     public Signer(String secretKey) {
-        Base64 parsed = new Base64(
-            secretKey.replace('-','+').replace('_','/') // convert from base64url
-        );
-
-        byte[] binaryKey = parsed.decode();
+        byte[] binaryKey = parseKey(secretKey);
         if (binaryKey.length < 32) {
             throw new IllegalArgumentException(
-                    "secretKey is too short (must be >= 32 bytes after decoding)"
-                    );
+                "secretKey is too short (must be >= 32 bytes after decoding)"
+            );
         }
 
         this.hmac = new MACSigner(binaryKey);
+    }
+
+    public static byte[] parseKey(String key) {
+        Base64 parsed = new Base64(
+            key.replace('-','+').replace('_','/') // convert from base64url
+        );
+        return parsed.decode();
     }
 
     /**
@@ -207,7 +210,7 @@ public class Signer {
      * Converts a Group into a generic Map for serialization.
      */
     private static Map<String,Object> groupToMap(Group group) {
-        Map<String,Object> groupMap = new HashMap<String,Object>();
+        Map<String,Object> groupMap = new TreeMap<String,Object>(); // deterministic ordering
 
         String id = group.getID();
         String displayName = group.getDisplayName();

@@ -3,12 +3,31 @@ package com.goinstant.auth;
 import java.util.Map;
 import java.util.Collections;
 
-class PlainThing {
+/**
+ * Base-class for PlainUser and PlainGroup.
+ *
+ * Fields have protected visibility to allow easy subclassing.
+ */
+abstract class PlainThing {
+    /**
+     * Permanent, unique identifier for this User/Group.
+     */
     protected String id;
+
+    /**
+     * Name to show for this User/Group.
+     */
     protected String displayName;
+
+    /**
+     * Map of custom properties this User/Group has (or null).
+     */
     protected Map<String,Object> custom;
 
-    protected static Map<String,Object> NO_CUSTOM = Collections.emptyMap();
+    /**
+     * Empty map of custom claims.
+     */
+    public static final Map<String,Object> NO_CUSTOM = Collections.emptyMap();
 
     /**
      * Sets up this Plain Thing.

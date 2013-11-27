@@ -1,21 +1,34 @@
 package com.goinstant.auth;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import com.goinstant.auth.User;
 import com.goinstant.auth.Group;
 import com.goinstant.auth.PlainThing;
 
-public class PlainUser extends PlainThing implements User  {
+/**
+ * A Plain User implementation.
+ *
+ * Fields have protected visibility to allow easy subclassing.
+ */
+public class PlainUser extends PlainThing implements User {
 
+    /**
+     * Domain of this user.
+     */
     protected String domain;
+
+    /**
+     * Groups this user belongs to (or null).
+     */
     protected Set<Group> groups;
 
-    static Set<Group> NO_GROUPS = Collections.emptySet();
+    /**
+     * Empty set of Groups.
+     */
+    public static final Set<Group> NO_GROUPS = Collections.emptySet();
 
     /**
      * Create a plain-old-User object.

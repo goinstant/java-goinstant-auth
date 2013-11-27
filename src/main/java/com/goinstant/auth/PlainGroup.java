@@ -1,9 +1,17 @@
 package com.goinstant.auth;
 
+import java.lang.Comparable;
+
 import com.goinstant.auth.Group;
 import com.goinstant.auth.PlainThing;
 
-public class PlainGroup extends PlainThing implements Group  {
+/**
+ * A Plain Group implementation.
+ *
+ * Implements Comparable so it can be inserted into TreeSets.
+ */
+public class PlainGroup extends PlainThing implements Group, Comparable<Group> {
+
     /**
      * Create a plain-old-Group object.
      *
@@ -29,16 +37,23 @@ public class PlainGroup extends PlainThing implements Group  {
      * Since Groups go into a Set, provide equality on the group ID.
      */
     @Override
-    public boolean equals(Object b) {
+    public boolean equals(Object that) {
         try {
-            Group group = (Group)b;
+            Group group = (Group)that;
             return this.equals(group);
         } catch (ClassCastException e) {
             return false;
         }
     }
 
-    public boolean equals(Group group) {
-        return this.getID().equals(group.getID());
+    public boolean equals(Group that) {
+        return this.compareTo(that) == 0;
+    }
+
+    /**
+     * Fullfill Comparable.
+     */
+    public int compareTo(Group that) {
+        return this.getID().compareTo(that.getID());
     }
 }
