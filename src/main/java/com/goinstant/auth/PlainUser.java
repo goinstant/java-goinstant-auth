@@ -4,10 +4,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import com.goinstant.auth.User;
-import com.goinstant.auth.Group;
-import com.goinstant.auth.PlainThing;
-
 /**
  * A Plain User implementation.
  *
@@ -70,14 +66,15 @@ public class PlainUser extends PlainThing implements User {
     }
 
     /**
-     * @return domain of this user and its groups
+     * Get the domain of this user and its groups.
      */
     public String getDomain() {
         return this.domain;
     }
 
     /**
-     * @return groups this user belongs to (can be empty-set, but always non-null).
+     * Get the groups this user belongs to.
+     * Can be empty-set, but always non-null.
      */
     public Set<Group> getGroups() {
         return this.groups != null ? this.groups : NO_GROUPS;

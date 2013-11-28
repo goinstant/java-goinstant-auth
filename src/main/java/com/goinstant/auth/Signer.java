@@ -3,11 +3,11 @@ package com.goinstant.auth;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.TreeMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -21,19 +21,23 @@ import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.goinstant.auth.Group;
-import com.goinstant.auth.User;
-
 /**
- * Your token Token Factory.
+ * Generates JWT Tokens for your Users.
  *
- * Consumers users, emits joy and JWT strings.
+ * Produces tokens that not only log-in your users to GoInstant, but provides
+ * your GoInstant client-side application with valuable information about those
+ * users!
+ *
+ * Please read the GoInstant Security and Auth documentation at
+ * {@link https://developers.goinstant.com/v1/security_and_auth/index.html}
  */
 public class Signer {
     private JWSSigner hmac;
 
-    // don't know why this isn't in nimbusds... it's part of the spec (maybe
-    // got removed in later drafts?)
+    /**
+     * Define the JWT message type.
+     * Nimbus JOSE+JWT doesn't define this... maybe it's removed in later spec drafts?
+     */
     private final static JOSEObjectType TYP_JWT = new JOSEObjectType("JWT");
 
     /**
@@ -100,6 +104,11 @@ public class Signer {
         this.hmac = new MACSigner(binaryKey);
     }
 
+    /**
+     * Parse a Base64 or Base64Url key into a byte array.
+     * @param key base64 or base64url formatted key
+     * @return decoded bytes
+     */
     public static byte[] parseKey(String key) {
         Base64 parsed = new Base64(
             key.replace('-','+').replace('_','/') // convert from base64url
@@ -167,6 +176,9 @@ public class Signer {
 
     /**
      * Converts a User and its Groups into a JWTClaimsSet.
+     *
+     * Groups are converted into a List so the List will get serialized as a
+     * JSON Array, which GoInstant requires.
      */
     private static JWTClaimsSet userToClaims(User user) {
         JWTClaimsSet claims = new JWTClaimsSet();
@@ -196,6 +208,7 @@ public class Signer {
 
         Set<Group> groups = user.getGroups();
         if (groups.size() > 0) {
+            // Lists will get serialized as JSON Arrays
             ArrayList<Object> g = new ArrayList<Object>(groups.size());
             for (Group group : groups) {
                 g.add(groupToMap(group));
@@ -208,6 +221,7 @@ public class Signer {
 
     /**
      * Converts a Group into a generic Map for serialization.
+     * Maps are serialized as JSON Objects.
      */
     private static Map<String,Object> groupToMap(Group group) {
         Map<String,Object> groupMap = new TreeMap<String,Object>(); // deterministic ordering
@@ -240,7 +254,7 @@ public class Signer {
     }
 
     /**
-     * Attempt to assign custom headers
+     * Attempt to assign custom headers.
      */
     private static JWSHeader convertHeaders(Map<String,Object> extraHeaders) {
         JWSHeader header = makeHeader();

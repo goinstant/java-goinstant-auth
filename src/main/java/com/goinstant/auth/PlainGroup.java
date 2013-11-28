@@ -1,14 +1,11 @@
 package com.goinstant.auth;
 
-import java.lang.Comparable;
-
-import com.goinstant.auth.Group;
-import com.goinstant.auth.PlainThing;
-
 /**
  * A Plain Group implementation.
  *
  * Implements Comparable so it can be inserted into TreeSets.
+ *
+ * Fields have protected visibility to allow easy subclassing.
  */
 public class PlainGroup extends PlainThing implements Group, Comparable<Group> {
 
@@ -46,12 +43,15 @@ public class PlainGroup extends PlainThing implements Group, Comparable<Group> {
         }
     }
 
+    /**
+     * Equality on group ID.
+     */
     public boolean equals(Group that) {
         return this.compareTo(that) == 0;
     }
 
     /**
-     * Fullfill Comparable.
+     * Compare group IDs.
      */
     public int compareTo(Group that) {
         return this.getID().compareTo(that.getID());
