@@ -6,9 +6,9 @@ This is an implementation of JWT tokens consistent with what's specified in the
 [GoInstant Users and Authentication
 Guide](https://developers.goinstant.com/v1/security_and_auth/guides/users_and_authentication.html).
 
-This library is not intended as a general-use JWT library; see JWT-php for
-that. At the time of this writing, GoInstant supports the [JWT IETF draft
-version 8](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-08).
+This library is not intended as a general-use JWT library.  The awesome [Nimbus
+JOSE+JWT](https://bitbucket.org/nimbusds/nimbus-jose-jwt) project is what this
+module builds upon.
 
 # Installation
 
