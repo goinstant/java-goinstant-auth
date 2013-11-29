@@ -8,8 +8,8 @@ import com.goinstant.auth.Group;
 /**
  * Defines properties of a User in GoInstant.
  *
- * For more information on users, please see the GoInstant guide on <a href="https://developer.goinstant.com/v1/security_and_auth/guides/users_and_authentication.html">Users And Authentication</a>
- *
+ * For more information on users, please see the GoInstant guide on <a href="https://developer.goinstant.com/v1/security_and_auth/guides/users_and_authentication.html">Users And Authentication</a>.
+ * <br>
  * See {@link PlainUser} for a concrete implementation.
  */
 public interface User {

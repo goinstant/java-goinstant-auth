@@ -27,9 +27,8 @@ import com.nimbusds.jwt.SignedJWT;
  * Produces tokens that not only log-in your users to GoInstant, but provides
  * your GoInstant client-side application with valuable information about those
  * users!
- *
- * Please read the GoInstant Security and Auth documentation at
- * {@link https://developers.goinstant.com/v1/security_and_auth/index.html}
+ * <br>
+ * Please read GoInstant guide on <a href="https://developer.goinstant.com/v1/security_and_auth/index.html">Security and Auth</a>.
  */
 public class Signer {
     private JWSSigner hmac;
@@ -120,7 +119,7 @@ public class Signer {
      * Create a signed JWT token for your GoInstant App.
      *
      * @param user the user to create a token for.
-     *   See {@link com.goinstant.auth.PlainUser} if you don't want to implement your own.
+     *   See {@link PlainUser} if you don't want to implement your own.
      *
      * @throws IllegalArgumentException if the user or extraHeaders contain bad
      *   values or reserved custom properties.
@@ -132,10 +131,10 @@ public class Signer {
     }
 
     /**
-     * Create and sign a JWT token for this userData.
+     * Create a signed JWT token for your GoInstant App, with custom headers.
      *
      * @param user the user to create a token for.
-     *   See {@link com.goinstant.auth.PlainUser} if you don't want to implement your own.
+     *   See {@link PlainUser} if you don't want to implement your own.
      *
      * @param extraHeaders a map of additional properties to include in the JWS header.
      *
