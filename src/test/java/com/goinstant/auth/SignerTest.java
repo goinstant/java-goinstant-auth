@@ -141,51 +141,31 @@ public class SignerTest{
         assertEquals(token, token2);
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testUserWithoutID() {
         Signer signer = new Signer(sharedKey);
         PlainUser user = new PlainUser(null, "example.com", "bob");
-
-        try {
-            signer.sign(user);
-            assertTrue(false);
-        } catch (IllegalArgumentException e) {
-        }
+        signer.sign(user);
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testUserWithEmptyId() {
         Signer signer = new Signer(sharedKey);
         PlainUser user = new PlainUser("", "example.com", "bob");
-
-        try {
-            signer.sign(user);
-            assertTrue(false);
-        } catch (IllegalArgumentException e) {
-        }
+        signer.sign(user);
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testUserWithoutDomain() {
         Signer signer = new Signer(sharedKey);
         PlainUser user = new PlainUser("bar", null, "bob");
-
-        try {
-            signer.sign(user);
-            assertTrue(false);
-        } catch (IllegalArgumentException e) {
-        }
+        signer.sign(user);
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testUserWithEmptyDomain() {
         Signer signer = new Signer(sharedKey);
         PlainUser user = new PlainUser("bar", "", "bob");
-
-        try {
-            signer.sign(user);
-            assertTrue(false);
-        } catch (IllegalArgumentException e) {
-        }
+        signer.sign(user);
     }
 }
