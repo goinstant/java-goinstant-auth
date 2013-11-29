@@ -24,6 +24,9 @@ We're not quite set up on Maven Central yet, but soon you'll be able to do this:
  </dependency>
 ```
 
+Until then, you can find .jar files on the [github releases
+page](https://github.com/goinstant/java-goinstant-auth/releases).
+
 # Usage
 
 (See `examples/SimpleSigner.java` for the complete source code)
@@ -85,8 +88,6 @@ Then, sign the token
 ```
 
 # API
-
-**Coming Soon!**
 
 Javadocs will be published to http://goinstant.github.io/java-goinstant-auth/apidocs/
 
