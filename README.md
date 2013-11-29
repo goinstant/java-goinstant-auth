@@ -89,7 +89,15 @@ Then, sign the token
 
 # API
 
-Javadocs will be published to http://goinstant.github.io/java-goinstant-auth/apidocs/
+Javadocs are published to http://goinstant.github.io/java-goinstant-auth/apidocs/
+
+Quick links:
+
+- [Signer](http://goinstant.github.io/java-goinstant-auth/apidocs/com/goinstant/auth/Signer.html) - used to create tokens
+- [User](http://goinstant.github.io/java-goinstant-auth/apidocs/com/goinstant/auth/User.html) interface defining what properties Signer expects a user to have
+  - [PlainUser](http://goinstant.github.io/java-goinstant-auth/apidocs/com/goinstant/auth/PlainUser.html) is a concrete POJO
+- [Group](http://goinstant.github.io/java-goinstant-auth/apidocs/com/goinstant/auth/Group.html) interface defining what properties Signer expects a group to have
+  - [PlainGroup](http://goinstant.github.io/java-goinstant-auth/apidocs/com/goinstant/auth/PlainUser.html) is a concrete POJO
 
 # Contributing
 
