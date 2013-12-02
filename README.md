@@ -18,7 +18,7 @@ We're not quite set up on Maven Central yet, but soon you'll be able to do this:
 
 ```xml
  <dependency>
-   <groupId>com.goinstant.auth</groupId>
+   <groupId>com.goinstant</groupId>
    <artifactId>goinstant-auth</artifactId>
    <version>X.Y.Z</version>
  </dependency>
