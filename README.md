@@ -12,20 +12,23 @@ module builds upon.
 
 # Installation
 
-**Coming Soon!**
+Requirements:
 
-We're not quite set up on Maven Central yet, but soon you'll be able to do this:
+- [java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/index.html) >= 7
+- [Maven](https://maven.apache.org) >= 3.1.1
+
+Add this to your `<dependencies>` section of `pom.xml`, or add it with your IDE:
 
 ```xml
  <dependency>
    <groupId>com.goinstant</groupId>
    <artifactId>goinstant-auth</artifactId>
-   <version>X.Y.Z</version>
+   <version>1.0.3</version>
  </dependency>
 ```
 
-Until then, you can find .jar files on the [github releases
-page](https://github.com/goinstant/java-goinstant-auth/releases).
+Alternatively, you can download build artifacts [from our Sonatype OSS staging
+area](http://oss.sonatype.org/content/groups/staging/com/goinstant/goinstant-auth/).
 
 # Usage
 
