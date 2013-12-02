@@ -24,8 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:goinstant/java-goinstant-auth.git</connection>
     <developerConnection>scm:git:git@github.com:goinstant/java-goinstant-auth.git</developerConnection>
-    <url>https://github.com/goinstant/java-goinstant-auth</url>
-    <tag>HEAD</tag>
+    <url>git@github.com:goinstant/java-goinstant-auth.git</url>
   </scm>
 
   <developers>
