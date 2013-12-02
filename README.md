@@ -29,7 +29,7 @@ page](https://github.com/goinstant/java-goinstant-auth/releases).
 
 # Usage
 
-(See `examples/SimpleSigner.java` for the complete source code)
+(See the [`example` directory](./example/) for the complete source code).
 
 First Construct a Signer with your goinstant application key. The application key
 should be in base64url or base64 string format. To get your key, go to [your

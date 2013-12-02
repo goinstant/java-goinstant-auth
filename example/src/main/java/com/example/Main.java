@@ -1,3 +1,5 @@
+package com.example;
+
 import java.lang.System;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,13 +19,23 @@ import com.goinstant.auth.PlainGroup;
  *
  * Usage: java SimpleSigner (userId) (displayName)
  */
-class SimpleSigner {
+class Main {
   static final String MY_DOMAIN = "example.com"; // TODO: set this to your domain name
 
   public static void main(String[] args) {
     String secretKey = System.getenv("SECRET_KEY");
+    if (secretKey == null) {
+      // default to key from the goinstant-auth unit tests
+      secretKey = "HKYdFdnezle2yrI2_Ph3cHz144bISk-cvuAbeAAA999";
+    }
+
     // construct this signer just once:
     Signer signer = new Signer(secretKey);
+
+    if (args.length < 2) {
+      System.err.println("Usage: (jar) userId displayName");
+      System.exit(1);
+    }
 
     String userId = args[0];
     String email = userId + "@example.com";
