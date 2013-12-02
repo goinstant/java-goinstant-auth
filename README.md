@@ -136,7 +136,15 @@ Publishing is automated via maven and happens in two steps.  You'll need to
 make sure pom.xml has the correct `<keyname>` or that your settings.xml has GPG
 credentials.
 
-### Preparing
+### Snapshots
+
+To stage a snapshot release (kinda like a pre-release, versions `X.Y.Z-SNAPSHOT`) run:
+
+```sh
+mvn clean deploy
+```
+
+### Staging
 
 Before running maven, update this README so that the [Installing](#installing)
 section references the new version number.
@@ -154,17 +162,17 @@ Running the command below will do the following:
 mvn clean release:prepare
 ```
 
-### Releasing
-
 If that's all good, then run the following to publish!
 
 ```sh
 # publish to maven:
-mvn release
+mvn release:perform
 
 # publish javadocs to github.io via gh-pages:
 mvn site
 ```
+
+Then follow the [Releasing a Staging Repository](https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-ReleasingaStagingRepository) instructions on the Sonatype Wiki.
 
 # Support
 
