@@ -1,6 +1,6 @@
 # java-goinstant-auth
 
-GoInstant Authentication for Your Java Application.
+GoInstant Authentication for Your Java Application. [![Build Status](https://travis-ci.org/goinstant/java-goinstant-auth.png?branch=master)](https://travis-ci.org/goinstant/java-goinstant-auth)
 
 This is an implementation of JWT tokens consistent with what's specified in the
 [GoInstant Users and Authentication
@@ -176,6 +176,13 @@ mvn site
 ```
 
 Then follow the [Releasing a Staging Repository](https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-ReleasingaStagingRepository) instructions on the Sonatype Wiki.
+
+In a nutshell:
+- click Staging Repositories (left pane)
+- find the new release (a "repository", looks like `comgoinstant-1000`)
+- click Close (top pane)
+- download and verify the artifacts (bottom pane)
+- click Release (top pane) - ok to "drop automatically"
 
 # Support
 
