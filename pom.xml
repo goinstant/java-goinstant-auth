@@ -10,7 +10,7 @@
   <artifactId>goinstant-auth</artifactId>
   <packaging>jar</packaging>
   <name>goinstant-auth</name>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
   <description>GoInstant Authentication for your Java Application.</description>
   <url>https://github.com/goinstant/java-goinstant-auth</url>
   <licenses>
@@ -25,7 +25,7 @@
     <connection>scm:git:git@github.com:goinstant/java-goinstant-auth.git</connection>
     <developerConnection>scm:git:git@github.com:goinstant/java-goinstant-auth.git</developerConnection>
     <url>git@github.com:goinstant/java-goinstant-auth.git</url>
-    <tag>HEAD</tag>
+    <tag>1.0.4</tag>
   </scm>
 
   <developers>
@@ -186,6 +186,7 @@
         <version>2.4.2</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
+          <connectionUrl>${project.scm.url}</connectionUrl>
         </configuration>
       </plugin>
       <plugin>
